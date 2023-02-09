@@ -1,5 +1,7 @@
-﻿using ConsumerAPI.Domain;
+﻿using ConsumerAPI.Contracts.Messages;
+using ConsumerAPI.Domain;
 using ConsumerAPI.Mapping;
+using ConsumerAPI.Messaging;
 using ConsumerAPI.Repositories;
 using FluentValidation;
 using FluentValidation.Results;
@@ -10,12 +12,14 @@ public class CustomerService : ICustomerService
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly IGitHubService _gitHubService;
+    private readonly ISqsMessenger _sqsMessenger;
 
     public CustomerService(ICustomerRepository customerRepository, 
-        IGitHubService gitHubService)
+        IGitHubService gitHubService, ISqsMessenger sqsMessenger)
     {
         _customerRepository = customerRepository;
         _gitHubService = gitHubService;
+        _sqsMessenger = sqsMessenger;
     }
     
     public async Task<bool> CreateAsync(Customer customer)
@@ -35,7 +39,14 @@ public class CustomerService : ICustomerService
         }
         
         var customerDto = customer.ToCustomerDto();
-        return await _customerRepository.CreateAsync(customerDto);
+        var response = await _customerRepository.CreateAsync(customerDto);
+
+        if (response)
+        {
+            await _sqsMessenger.SendMessageAsync(customer.ToCustomerCreatedMessage());
+        }
+
+        return response;
     }
 
     public async Task<Customer?> GetAsync(Guid id)
@@ -61,12 +72,26 @@ public class CustomerService : ICustomerService
             throw new ValidationException(message, GenerateValidationError(nameof(customer.GitHubUsername), message));
         }
         
-        return await _customerRepository.UpdateAsync(customerDto);
+        var response = await _customerRepository.UpdateAsync(customerDto);
+
+        if (response)
+            await _sqsMessenger.SendMessageAsync(customer.ToCustomerUpdatedMessage());
+        
+        return response;
     }
 
     public async Task<bool> DeleteAsync(Guid id)
     {
-        return await _customerRepository.DeleteAsync(id);
+        var result = await _customerRepository.DeleteAsync(id);
+        if (result)
+        {
+            await _sqsMessenger.SendMessageAsync(new CustomerDeleted
+            {
+                Id = id,
+            });
+        }
+
+        return result;
     }
 
     private static ValidationFailure[] GenerateValidationError(string paramName, string message)

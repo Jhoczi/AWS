@@ -1,4 +1,6 @@
+using Amazon.SQS;
 using ConsumerAPI.Database;
+using ConsumerAPI.Messaging;
 using ConsumerAPI.Repositories;
 using ConsumerAPI.Services;
 using ConsumerAPI.Validation;
@@ -31,6 +33,11 @@ SqlMapper.RemoveTypeMap(typeof(Guid?));
 builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
     new SqliteConnectionFactory(config.GetValue<string>("Database:ConnectionString")!));
 builder.Services.AddSingleton<DatabaseInitializer>();
+
+builder.Services.Configure<QueueSettings>(builder.Configuration.GetSection(QueueSettings.Key));
+builder.Services.AddSingleton<IAmazonSQS, AmazonSQSClient>();
+builder.Services.AddSingleton<ISqsMessenger, SqsMessenger>();
+
 builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>();
 builder.Services.AddSingleton<ICustomerService, CustomerService>();
 builder.Services.AddSingleton<IGitHubService, GitHubService>();
