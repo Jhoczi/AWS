@@ -4,6 +4,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQS", "SQS", "{1371AD6C-027
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqsPublisher", "SqsPublisher\SqsPublisher.csproj", "{A7F73404-758C-41DA-854A-2415B09EC768}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqsConsumer", "SqsConsumer\SqsConsumer.csproj", "{23E523EB-4F49-4DBF-94F3-E14D1482E4F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -11,11 +13,16 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A7F73404-758C-41DA-854A-2415B09EC768} = {1371AD6C-0275-4653-9027-3CFE10F43A48}
+		{23E523EB-4F49-4DBF-94F3-E14D1482E4F7} = {1371AD6C-0275-4653-9027-3CFE10F43A48}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A7F73404-758C-41DA-854A-2415B09EC768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A7F73404-758C-41DA-854A-2415B09EC768}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7F73404-758C-41DA-854A-2415B09EC768}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7F73404-758C-41DA-854A-2415B09EC768}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23E523EB-4F49-4DBF-94F3-E14D1482E4F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23E523EB-4F49-4DBF-94F3-E14D1482E4F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23E523EB-4F49-4DBF-94F3-E14D1482E4F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23E523EB-4F49-4DBF-94F3-E14D1482E4F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
